@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PeakAndPlatePredictorModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DateRule">
+    <Key>
+      <PropertyRef Name="IdDateRules" />
+    </Key>
+    <Property Name="WeekDay" Type="Int32" Nullable="false" />
+    <Property Name="IdDateRules" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="RestrictionRules" Relationship="Self.FK_RestrictionRules_DateRules" FromRole="DateRules" ToRole="RestrictionRules" />
+  </EntityType>
+  <EntityType Name="ExceptionPlate">
+    <Key>
+      <PropertyRef Name="PlateValue" />
+    </Key>
+    <Property Name="PlateValue" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PeakAndPlateManager">
+    <Key>
+      <PropertyRef Name="IdPeakAndPlateManager" />
+    </Key>
+    <Property Name="IdPeakAndPlateManager" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LastPlateDigit" Type="Int32" Nullable="false" />
+    <Property Name="IdRestrictionRules" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="RestrictionRule" Relationship="Self.FK_PeakAndPlateManager_RestrictionRules" FromRole="PeakAndPlateManager" ToRole="RestrictionRules" />
+  </EntityType>
+  <EntityType Name="RestrictionRule">
+    <Key>
+      <PropertyRef Name="IdRestrictionRules" />
+    </Key>
+    <Property Name="IdRestrictionRules" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="IdTimeInterval" Type="Int32" Nullable="false" />
+    <Property Name="IdDateRules" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="DateRule" Relationship="Self.FK_RestrictionRules_DateRules" FromRole="RestrictionRules" ToRole="DateRules" />
+    <NavigationProperty Name="PeakAndPlateManagers" Relationship="Self.FK_PeakAndPlateManager_RestrictionRules" FromRole="RestrictionRules" ToRole="PeakAndPlateManager" />
+    <NavigationProperty Name="TimeInterval" Relationship="Self.FK_RestrictionRules_TimeInterval" FromRole="RestrictionRules" ToRole="TimeInterval" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TimeInterval">
+    <Key>
+      <PropertyRef Name="IdTimeInterval" />
+    </Key>
+    <Property Name="StartTime" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="EndTime" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="IdTimeInterval" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <NavigationProperty Name="RestrictionRules" Relationship="Self.FK_RestrictionRules_TimeInterval" FromRole="TimeInterval" ToRole="RestrictionRules" />
+  </EntityType>
+  <Association Name="FK_RestrictionRules_DateRules">
+    <End Role="DateRules" Type="Self.DateRule" Multiplicity="1" />
+    <End Role="RestrictionRules" Type="Self.RestrictionRule" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DateRules">
+        <PropertyRef Name="IdDateRules" />
+      </Principal>
+      <Dependent Role="RestrictionRules">
+        <PropertyRef Name="IdDateRules" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PeakAndPlateManager_RestrictionRules">
+    <End Role="RestrictionRules" Type="Self.RestrictionRule" Multiplicity="1" />
+    <End Role="PeakAndPlateManager" Type="Self.PeakAndPlateManager" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="RestrictionRules">
+        <PropertyRef Name="IdRestrictionRules" />
+      </Principal>
+      <Dependent Role="PeakAndPlateManager">
+        <PropertyRef Name="IdRestrictionRules" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RestrictionRules_TimeInterval">
+    <End Role="TimeInterval" Type="Self.TimeInterval" Multiplicity="1" />
+    <End Role="RestrictionRules" Type="Self.RestrictionRule" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TimeInterval">
+        <PropertyRef Name="IdTimeInterval" />
+      </Principal>
+      <Dependent Role="RestrictionRules">
+        <PropertyRef Name="IdTimeInterval" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PeakAndPlatePredictorEntities2" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DateRules" EntityType="Self.DateRule" />
+    <EntitySet Name="ExceptionPlates" EntityType="Self.ExceptionPlate" />
+    <EntitySet Name="PeakAndPlateManagers" EntityType="Self.PeakAndPlateManager" />
+    <EntitySet Name="RestrictionRules" EntityType="Self.RestrictionRule" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="TimeIntervals" EntityType="Self.TimeInterval" />
+    <AssociationSet Name="FK_RestrictionRules_DateRules" Association="Self.FK_RestrictionRules_DateRules">
+      <End Role="DateRules" EntitySet="DateRules" />
+      <End Role="RestrictionRules" EntitySet="RestrictionRules" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PeakAndPlateManager_RestrictionRules" Association="Self.FK_PeakAndPlateManager_RestrictionRules">
+      <End Role="RestrictionRules" EntitySet="RestrictionRules" />
+      <End Role="PeakAndPlateManager" EntitySet="PeakAndPlateManagers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RestrictionRules_TimeInterval" Association="Self.FK_RestrictionRules_TimeInterval">
+      <End Role="TimeInterval" EntitySet="TimeIntervals" />
+      <End Role="RestrictionRules" EntitySet="RestrictionRules" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Welcome to Peask and Plate Predictor</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <br />
+    <br />
+    <br />
+
+    <div class="container">
+        <ul id="welcome"></ul>
+    </div>
+    <br />
+    <div class="container" id="chat">
+        <div>
+            <form name="PeakAndPlatePredictorForm" id="PeakAndPlatePredictorForm">
+                <div class="form-group">
+                    <label for="sendMessage">Please enter the required data</label>
+                    <br />
+                    <input type="text" width="200" class="form-control" id="fullPlate" name="fullPlate"  placeholder="Write your full plate value">
+                </div>
+                <div class="form-group">
+                    <!--<label for="exampleInputEmail1">User</label>-->
+                    <input type="text" width="200" class="form-control" id="dateSearch" name="dateSearch" placeholder="Date for the search dd/mm/YYYY">
+                </div>
+                <div class="form-group">
+                    <!--<label for="exampleInputEmail1">User</label>-->
+                    <input type="text" width="200" class="form-control" id="timeSearch" name="timeSearch"  placeholder="Enter the Time for the search HH:mm">
+                </div>
+                <br />
+                <button type="button" id="send" class="btn btn-primary">  Search  </button>
+
+            </form>
+            <br />
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@aspnet/signalr@1.0.0-rc1-update1/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript">    
+            var ConnectionId = '';
+            //send to web api post the  message from a user
+            var sendbutton = document.getElementById("send");
+            sendbutton.addEventListener("click", event => {
+                fetch("http://localhost:56871/api/PeakAndPlate/check", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        plateValue: document.getElementById('fullPlate').value,
+                        strTargetDate: document.getElementById('dateSearch').value,
+                        targetTime: document.getElementById('timeSearch').value
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                    .catch(error => console.error('Error:', error))
+                    .then(response => console.log('Success:', response));
+            });
+
+    </script>
+    <br />
+
+
+</body>
+
+</html>
